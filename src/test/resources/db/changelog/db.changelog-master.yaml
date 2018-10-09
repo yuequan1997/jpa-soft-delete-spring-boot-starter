@@ -1,0 +1,46 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: YueQuan
+    changes:
+    - createTable:
+        tableName: users
+        columns:
+        - column:
+            name: id
+            type: int
+            constraints:
+              primaryKey: true
+              nullable: false
+        - column:
+            name: username
+            type: varchar(16)
+            constraints:
+              nullable: false
+        - column:
+            name: password
+            type: varchar(64)
+            constraints:
+              nullable: false
+        - column:
+            name: name
+            type: varchar(16)
+    - createIndex:
+        tableName: users
+        indexName: idx_user_username
+        unique: true
+        columns:
+        - column:
+            name: username
+    - createIndex:
+        tableName: users
+        indexName: idx_user_name
+        columns:
+        - column:
+            name: name
+    - addAutoIncrement:
+          tableName: users
+          startWith: 1
+          incrementBy: 1
+          columnName: id
+          columnDataType: int
