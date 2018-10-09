@@ -20,10 +20,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.data.jpa.repository.query.QueryUtils.DELETE_ALL_QUERY_STRING;
-import static org.springframework.data.jpa.repository.query.QueryUtils.applyAndBind;
-import static org.springframework.data.jpa.repository.query.QueryUtils.getQueryString;
-
 
 /**
  * Soft Delete override of the {@link SimpleJpaRepository} class.
@@ -33,9 +29,7 @@ import static org.springframework.data.jpa.repository.query.QueryUtils.getQueryS
  * @see org.springframework.data.jpa.repository.support.SimpleJpaRepository
  */
 @SoftDelete
-@Repository
-@Transactional(readOnly = true)
-public class SimpleJpaSoftDeleteRepository<T,ID> extends SimpleJpaRepository<T,ID> {
+public class JpaSoftDeleteRepository<T,ID> extends SimpleJpaRepository<T,ID> {
 
     private static final String ID_MUST_NOT_BE_NULL = "The given id must not be null!";
     private static final String SOFT_DELETE_FLAG_COLUMN = "removed_at";
@@ -51,7 +45,7 @@ public class SimpleJpaSoftDeleteRepository<T,ID> extends SimpleJpaRepository<T,I
      * @param entityInformation must not be {@literal null}.
      * @param entityManager must not be {@literal null}.
      */
-    public SimpleJpaSoftDeleteRepository(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
+    public JpaSoftDeleteRepository(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
         this.entityInformation = entityInformation;
         this.em = entityManager;
@@ -63,7 +57,7 @@ public class SimpleJpaSoftDeleteRepository<T,ID> extends SimpleJpaRepository<T,I
      * @param domainClass must not be {@literal null}.
      * @param em must not be {@literal null}.
      */
-    public SimpleJpaSoftDeleteRepository(Class<T> domainClass, EntityManager em) {
+    public JpaSoftDeleteRepository(Class<T> domainClass, EntityManager em) {
         this(JpaEntityInformationSupport.getEntityInformation(domainClass, em), em);
     }
 
