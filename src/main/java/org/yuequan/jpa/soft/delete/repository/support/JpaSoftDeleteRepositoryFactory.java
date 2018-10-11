@@ -21,6 +21,9 @@ public class JpaSoftDeleteRepositoryFactory extends JpaRepositoryFactory {
 
     @Override
     protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
+        if(metadata.getRepositoryInterface().isAnnotationPresent(SoftDelete.class)){
+            return JpaSoftDeleteRepository.class;
+        }
         return super.getRepositoryBaseClass(metadata);
     }
 }
