@@ -1,6 +1,7 @@
 package org.yuequan.jpa.soft.delete.mock.entity;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -12,8 +13,10 @@ public class User {
     private String name;
     private String username;
     private String password;
+
     @Column(name = "removed_at")
     private Date removedAt;
+
     public Integer getId() {
         return id;
     }
@@ -44,5 +47,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Date getRemovedAt() {
+        return removedAt;
+    }
+
+    public void setRemovedAt(Date removedAt) {
+        this.removedAt = removedAt;
     }
 }
