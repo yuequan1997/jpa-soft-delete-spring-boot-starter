@@ -142,7 +142,7 @@ public class JpaSoftDeleteRepository<T,ID extends Serializable> extends SimpleJp
     public Optional<T> findById(ID id) {
        return super.findOne(Specification.where(new ByIdSpecification<T,ID>(id,entityInformation)));
     }
-    
+
     @Override
     protected <S extends T> TypedQuery<Long> getCountQuery(Specification<S> spec, Class<S> domainClass) {
         spec.and(new DeletedSpecification<>());
