@@ -1,6 +1,8 @@
 package org.yuequan.jpa.soft.delete.repository.support;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.data.jpa.provider.PersistenceProvider;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
@@ -18,7 +20,9 @@ import javax.persistence.criteria.Root;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -80,7 +84,7 @@ public class JpaSoftDeleteRepository<T,ID> extends SimpleJpaRepository<T,ID> {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaUpdate<T> updater = criteriaBuilder.createCriteriaUpdate(getDomainClass());
         Root<T> root = updater.from(getDomainClass());
-        updater.set(SOFT_DELETE_FLAG_PROPERTIES, LocalDateTime.now());
+        updater.set(SOFT_DELETE_FLAG_PROPERTIES, new Date());
         final List<Predicate> predicates = new ArrayList<>();
         if(entityInformation.hasCompositeId()){
             entityInformation.getIdAttributeNames().forEach(idName -> {
