@@ -1,20 +1,19 @@
 package org.yuequan.jpa.soft.delete.mock.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String username;
     private String password;
-
+    @Column(name = "removed_at")
+    private Date removedAt;
     public Integer getId() {
         return id;
     }

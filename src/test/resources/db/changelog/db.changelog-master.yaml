@@ -25,6 +25,9 @@ databaseChangeLog:
         - column:
             name: name
             type: varchar(16)
+        - column:
+            name: removed_at
+            type: timestamp
     - createIndex:
         tableName: users
         indexName: idx_user_username
