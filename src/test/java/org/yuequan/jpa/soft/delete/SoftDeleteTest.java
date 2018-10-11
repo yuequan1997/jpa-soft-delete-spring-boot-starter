@@ -12,6 +12,7 @@ import org.yuequan.jpa.soft.delete.mock.entity.User;
 import org.yuequan.jpa.soft.delete.mock.repository.UserRepository;
 import org.yuequan.jpa.soft.delete.repository.SoftDelete;
 
+import java.util.Optional;
 import java.util.Random;
 
 @RunWith(SpringRunner.class)
@@ -28,8 +29,7 @@ public class SoftDeleteTest {
         User user = getUser();
         userRepository.save(user);
         userRepository.delete(user);
-        User deletedUser = userRepository.findById(user.getId()).get();
-        Assert.assertNull(deletedUser);
+        Assert.assertEquals(userRepository.findById(user.getId()), Optional.empty());
     }
 
     private User getUser(){
