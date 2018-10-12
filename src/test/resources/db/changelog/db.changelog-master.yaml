@@ -31,7 +31,6 @@ databaseChangeLog:
     - createIndex:
         tableName: users
         indexName: idx_user_username
-        unique: true
         columns:
         - column:
             name: username

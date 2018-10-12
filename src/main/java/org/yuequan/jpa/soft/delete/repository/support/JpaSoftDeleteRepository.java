@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.data.jpa.provider.PersistenceProvider;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.CrudMethodMetadata;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
@@ -20,12 +21,17 @@ import org.yuequan.jpa.soft.delete.repository.SoftDelete;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static org.springframework.data.jpa.repository.query.QueryUtils.DELETE_ALL_QUERY_STRING;
+import static org.springframework.data.jpa.repository.query.QueryUtils.applyAndBind;
+import static org.springframework.data.jpa.repository.query.QueryUtils.getQueryString;
 
 
 /**
@@ -76,12 +82,16 @@ public class JpaSoftDeleteRepository<T,ID extends Serializable> extends SimpleJp
         this.metadata = crudMethodMetadata;
     }
 
-    @Override
-    @Transactional
-    public void deleteById(ID id) {
-        Assert.notNull(id, ID_MUST_NOT_BE_NULL);
-        delete(findById(id).orElseThrow(() -> new EmptyResultDataAccessException(
-                String.format("No %s entity with id %s exists!", entityInformation.getJavaType(), id), 1)));
+    private String getDeleteAllQueryString(){
+        StringBuilder softDeleteAllQueryBuilder = new StringBuilder();
+        softDeleteAllQueryBuilder.append("UPDATE %s x ");
+        softDeleteAllQueryBuilder.append("SET ");
+        softDeleteAllQueryBuilder.append(SOFT_DELETE_FLAG_PROPERTIES);
+        softDeleteAllQueryBuilder.append("=");
+        softDeleteAllQueryBuilder.append(" :");
+        softDeleteAllQueryBuilder.append(SOFT_DELETE_FLAG_PROPERTIES);
+        String softDeleteAllQueryString = softDeleteAllQueryBuilder.toString();
+        return getQueryString(softDeleteAllQueryString, entityInformation.getEntityName());
     }
 
     /**
@@ -111,31 +121,32 @@ public class JpaSoftDeleteRepository<T,ID extends Serializable> extends SimpleJp
 
     @Override
     @Transactional
-    public void deleteAll(Iterable<? extends T> entities) {
-        Assert.notNull(entities, "The given Iterable of entities not be null!");
-        for (T entity : entities) {
-            delete(entity);
-        }
-    }
-
-    @Override
-    @Transactional
     public void deleteInBatch(Iterable<T> entities) {
-        super.deleteInBatch(entities);
-    }
+        Assert.notNull(entities, "The given Iterable of entities not be null!");
 
-    @Override
-    @Transactional
-    public void deleteAll() {
-        for (T element : findAll()) {
-            delete(element);
+        if (!entities.iterator().hasNext()) {
+            return;
         }
+        StringBuilder whereBuilder = new StringBuilder(getDeleteAllQueryString());
+
+        Iterator<T> iterator = entities.iterator();
+        int i = 0;
+
+        whereBuilder.append(" where x in (:entities)");
+
+        Query query = em.createQuery(whereBuilder.toString());
+
+       query.setParameter(SOFT_DELETE_FLAG_PROPERTIES, new Date());
+       query.setParameter("entities", entities);
+       query.executeUpdate();
     }
 
     @Override
     @Transactional
     public void deleteAllInBatch() {
-        super.deleteAllInBatch();
+        em.createQuery(getDeleteAllQueryString())
+                .setParameter(SOFT_DELETE_FLAG_PROPERTIES, new Date())
+                .executeUpdate();
     }
 
     @Override
@@ -145,8 +156,7 @@ public class JpaSoftDeleteRepository<T,ID extends Serializable> extends SimpleJp
 
     @Override
     protected <S extends T> TypedQuery<Long> getCountQuery(Specification<S> spec, Class<S> domainClass) {
-        spec.and(new DeletedSpecification<>());
-        return super.getCountQuery(spec, domainClass);
+        return super.getCountQuery(spec != null ? spec.and(new DeletedSpecification<>()) : new DeletedSpecification<>(), domainClass);
     }
 
     private static final class ByIdSpecification<T,ID extends Serializable> implements Specification<T>{
@@ -193,6 +203,6 @@ public class JpaSoftDeleteRepository<T,ID extends Serializable> extends SimpleJp
 
     @Override
     protected <S extends T> TypedQuery<S> getQuery(Specification<S> spec, Class<S> domainClass, Sort sort) {
-        return super.getQuery(spec.and(new DeletedSpecification<>()), domainClass, sort);
+        return super.getQuery(spec != null ? spec.and(new DeletedSpecification<>()) : new DeletedSpecification<>(), domainClass, sort);
     }
 }
