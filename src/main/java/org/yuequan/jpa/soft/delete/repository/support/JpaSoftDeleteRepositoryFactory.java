@@ -9,6 +9,9 @@ import org.yuequan.jpa.soft.delete.repository.SoftDelete;
 
 import javax.persistence.EntityManager;
 
+/**
+ * @author yuequan
+ */
 public class JpaSoftDeleteRepositoryFactory extends JpaRepositoryFactory {
     /**
      * Creates a new {@link JpaRepositoryFactory}.

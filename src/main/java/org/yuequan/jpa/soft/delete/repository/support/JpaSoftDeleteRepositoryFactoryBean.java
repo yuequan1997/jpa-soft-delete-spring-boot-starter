@@ -7,6 +7,9 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 
 import javax.persistence.EntityManager;
 
+/**
+ * @author yuequan
+ */
 public class JpaSoftDeleteRepositoryFactoryBean<T extends Repository<S, ID>, S, ID> extends JpaRepositoryFactoryBean<T, S, ID> {
     /**
      * Creates a new {@link JpaRepositoryFactoryBean} for the given repository interface.
