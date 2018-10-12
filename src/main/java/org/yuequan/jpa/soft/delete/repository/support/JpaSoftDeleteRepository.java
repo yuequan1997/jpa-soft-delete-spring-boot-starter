@@ -193,7 +193,6 @@ public class JpaSoftDeleteRepository<T,ID extends Serializable> extends SimpleJp
 
     @Override
     protected <S extends T> TypedQuery<S> getQuery(Specification<S> spec, Class<S> domainClass, Sort sort) {
-        spec.and(new DeletedSpecification<>());
-        return super.getQuery(spec, domainClass, sort);
+        return super.getQuery(spec.and(new DeletedSpecification<>()), domainClass, sort);
     }
 }
