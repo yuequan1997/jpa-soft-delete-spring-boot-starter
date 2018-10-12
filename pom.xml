@@ -5,7 +5,7 @@
 
 	<groupId>org.yuequan</groupId>
 	<artifactId>jpa-soft-delete-spring-boot-starter</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0.RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>jpa-soft-delete-spring-boot-starter</name>
@@ -13,7 +13,7 @@
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
+		<artifactId>spring-boot-starters</artifactId>
 		<version>2.0.5.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
@@ -55,8 +55,35 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://github.com/yuequan1997/jpa-soft-delete-spring-boot-starter/blob/master/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
+	<scm>
+		<url>https://github.com/yuequan1997/jpa-soft-delete-spring-boot-starter</url>
+		<connection>https://github.com/yuequan1997/jpa-soft-delete-spring-boot-starter.git</connection>
+		<developerConnection>https://github.com/yuequan1997/</developerConnection>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>yuequan</name>
+			<email>yuequan1997@gmail.com</email>
+		</developer>
+	</developers>
 </project>
